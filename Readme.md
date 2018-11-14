@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Юлия Забелина](https://up.htmlacademy.ru/javascript/16/user/811937).
-* Наставник: `Неизвестно`.
+* Наставник: `Александр Бренчев`.
 
 ---
 
