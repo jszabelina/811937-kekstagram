@@ -6,7 +6,14 @@ function getRandomNumber(min, max) {
 }
 
 
+function getRandomArrayElement(array, min, max){
+  return array[getRandomNumber(min, max)];
+}
+
+
 var pictures = [];
+
+
 var comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -15,6 +22,8 @@ var comments = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
+
+
 var names = [
   'Кекс',
   'Рудольф',
@@ -23,6 +32,7 @@ var names = [
   'Пушок',
   'Барсик'
 ];
+
 
 var descriptions = [
   'Тестим новую камеру!',
@@ -39,7 +49,7 @@ var PHOTO_COUNT = 25;
 
 function getRandomComments(commentsCount) {
 
-  var comment = comments[getRandomNumber(0, 5)];
+  var comment = getRandomArrayElement(comments, 0, 5);
 
   if (commentsCount === 2) {
     var secondComment = getRandomComments(1);
@@ -56,33 +66,26 @@ function getRandomComments(commentsCount) {
 
 for (var i = 1; i <= PHOTO_COUNT; i++) {
 
-
   var commentsForCurrentItem = [];
 
-  var commentsCount = getRandomNumber(0, 5);
-
-  if (commentsCount === 0) {
-    commentsCount = 1;
-  }
+  var commentsCount = getRandomNumber(1, 5);
 
   for (var j = 0; j < commentsCount; j++){
     commentsForCurrentItem.push(
         {
           avatar: 'img/avatar-' + getRandomNumber(1, 6) + '.svg',
           message: getRandomComments(getRandomNumber(1, 2)),
-          name: names[getRandomNumber(0, 5)]
+          name: getRandomArrayElement(names, 0, 5)
         }
     );
   }
-
 
   pictures.push({
     url: 'photos/' + i + '.jpg',
     likes: getRandomNumber(15, 200),
     comments: commentsForCurrentItem,
-    description: descriptions[getRandomNumber(0, 5)]
+    description: getRandomArrayElement(descriptions, 0, 5)
   });
-
 }
 
 
@@ -121,7 +124,7 @@ var showBigImage = function (picture) {
   var bigPicture = document.querySelector('.big-picture');
   bigPicture.classList.remove('hidden');
 
-  var bigPicturesImg = document.querySelector('.big-picture__img img');
+  var bigPicturesImg = bigPicture.querySelector('.big-picture__img img');
   bigPicturesImg.src = picture.url;
   document.querySelector('.likes-count').textContent = picture.likes;
   document.querySelector('.comments-count').textContent = picture.comments.length;
