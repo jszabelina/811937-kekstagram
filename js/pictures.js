@@ -1,11 +1,22 @@
 'use strict';
 
 
+/**
+ * Возвращает случайно число между минимальным и максимальным
+ * @param min минимальное число
+ * @param max максимальное число
+ * @return {number}
+ */
 function getRandomNumber(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
 
+/**
+ * Возвращает случайный элемент массива
+ * @param array массив
+ * @return {*}
+ */
 function getRandomArrayElement(array) {
   return array[getRandomNumber(0, array.length - 1)];
 }
@@ -47,23 +58,19 @@ var descriptions = [
 var PHOTO_COUNT = 25;
 
 /**
- * Рекурсивная функция получения случайного 1го или 2х комментариев
+ * функция получения случайного 1го или 2х комментариев
  * @param commentsCount количество комментариев
  * @return string
  */
 function getRandomComments(commentsCount) {
 
-  var comment = getRandomArrayElement(comments); // получаем случайный элемент из массива комментариев
+  var comment = getRandomArrayElement(comments);
 
   if (commentsCount === 2) {
-    var secondComment = getRandomComments(1); // если кол-во комментариев равно двум, получаем еще один случайных
+    var secondComment = getRandomArrayElement(comments);
 
-    /**
-     * вызываем рекурсивно функцию до момента, пока 1й и 2й комментарий равны
-     * это делается для того, что бы получить два разных комментария
-     */
     while (comment === secondComment) {
-      secondComment = getRandomComments(1);
+      secondComment = getRandomArrayElement(comments);
     }
 
     comment += ' ' + secondComment;
@@ -97,7 +104,14 @@ for (var i = 1; i <= PHOTO_COUNT; i++) {
   });
 }
 
-
+/**
+ * Возвращает DOM - элемент для фотографии
+ * с проставленными ссылками, количеством лайков и комментарием
+ * @param link ссылка
+ * @param likes лайки
+ * @param pictureComments комментарии
+ * @return {Node}
+ */
 function getPictureElement(link, likes, pictureComments) {
   var template = document.querySelector('#picture').content.cloneNode(true);
   template.querySelector('.picture__img').src = link;
@@ -120,6 +134,11 @@ var picturesSection = document.querySelector('.pictures');
 picturesSection.appendChild(fragment);
 
 
+/**
+ * Создает DOM-элемент <li> комментария и наполняет его аватаром и сообщением
+ * @param commentItem
+ * @returns {Node}
+ */
 function getCommentElement(commentItem) {
   var templateLi = document.querySelector('#comment').content.cloneNode(true);
 
@@ -129,6 +148,10 @@ function getCommentElement(commentItem) {
 }
 
 
+/**
+ * функция принимает объект фотографии и показывает её как большую
+ * @param picture
+ */
 var showBigImage = function (picture) {
   var bigPicture = document.querySelector('.big-picture');
   bigPicture.classList.remove('hidden');
