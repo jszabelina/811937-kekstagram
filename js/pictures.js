@@ -107,16 +107,14 @@ for (var i = 1; i <= PHOTO_COUNT; i++) {
 /**
  * Возвращает DOM - элемент для фотографии
  * с проставленными ссылками, количеством лайков и комментарием
- * @param link ссылка
- * @param likes лайки
- * @param pictureComments комментарии
+ * @param picture
  * @return {Node}
  */
-function getPictureElement(link, likes, pictureComments) {
+function getPictureElement(picture) {
   var template = document.querySelector('#picture').content.cloneNode(true);
-  template.querySelector('.picture__img').src = link;
-  template.querySelector('.picture__likes').textContent = likes;
-  template.querySelector('.picture__comments').textContent = pictureComments;
+  template.querySelector('.picture__img').src = picture.link;
+  template.querySelector('.picture__likes').textContent = picture.likes;
+  template.querySelector('.picture__comments').textContent = picture.comments;
   return template;
 }
 
@@ -125,7 +123,7 @@ var fragment = document.createDocumentFragment();
 
 
 for (var j = 0; j < pictures.length; j++) {
-  var template = getPictureElement(pictures[j].url, pictures[j].likes, pictures[j].comments);
+  var template = getPictureElement(pictures[j]);
   fragment.appendChild(template);
 }
 
@@ -159,19 +157,19 @@ var showBigImage = function (picture) {
   // вызываю querySelector у big-picture, а не у document
   var bigPicturesImg = bigPicture.querySelector('.big-picture__img img');
   bigPicturesImg.src = picture.url;
-  document.querySelector('.likes-count').textContent = picture.likes;
-  document.querySelector('.comments-count').textContent = picture.comments.length;
+  bigPicture.querySelector('.likes-count').textContent = picture.likes;
+  bigPicture.querySelector('.comments-count').textContent = picture.comments.length;
 
-  var ulSocialComments = document.querySelector('.social__comments');
+  var ulSocialComments = bigPicture.querySelector('.social__comments');
   for (var currentCommentIndex = 0; currentCommentIndex < picture.comments.length; currentCommentIndex++) {
     ulSocialComments.appendChild(getCommentElement(picture.comments[currentCommentIndex]));
   }
 
 
-  document.querySelector('.social__caption').textContent = picture.description;
+  bigPicture.querySelector('.social__caption').textContent = picture.description;
 
-  document.querySelector('.social__comment-count').classList.add('visually-hidden');
-  document.querySelector('.comments-loader').classList.add('visually-hidden');
+  bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
+  bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
 };
 
 
