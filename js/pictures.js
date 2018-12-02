@@ -112,7 +112,7 @@ for (var i = 1; i <= PHOTO_COUNT; i++) {
  */
 function getPictureElement(picture) {
   var template = document.querySelector('#picture').content.cloneNode(true);
-  template.querySelector('.picture__img').src = picture.link;
+  template.querySelector('.picture__img').src = picture.url;
   template.querySelector('.picture__likes').textContent = picture.likes;
   template.querySelector('.picture__comments').textContent = picture.comments;
   return template;
