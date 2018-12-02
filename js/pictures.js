@@ -173,5 +173,48 @@ var showBigImage = function (picture) {
   bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
 };
 
+var uploadFileInput = document.querySelector('#upload-file');
 
-showBigImage(pictures[0]);
+
+var imageForm = document.querySelector('.img-upload__overlay');
+
+
+uploadFileInput.addEventListener('change', function () {
+    imageForm.classList.remove('hidden');
+});
+
+
+var closeButton = document.querySelector('#upload-cancel');
+
+
+closeButton.addEventListener('click', function () {
+  imageForm.classList.add('hidden');
+});
+
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 27) {
+    if (!imageForm.classList.contains('hidden')){
+      imageForm.classList.add('hidden');
+    }
+  }
+});
+
+
+var effectItems = document.querySelectorAll('.effects__item');
+
+
+var addEffectItemHandler = function (effectItem) {
+  effectItem.addEventListener('click', function () {
+    var classForEffect = effectItem.querySelector('.effects__preview').classList[1];
+    var previewImage = imageForm.querySelector('.img-upload__preview img');
+    previewImage.classList = '';
+    previewImage.classList.add(classForEffect);
+  });
+};
+
+
+for (var effectsItemIndex = 0; effectsItemIndex < effectItems.length; effectsItemIndex++) {
+  addEffectItemHandler(effectItems[effectsItemIndex]);
+}
+
