@@ -3,8 +3,8 @@
 
 /**
  * Возвращает случайно число между минимальным и максимальным
- * @param min минимальное число
- * @param max максимальное число
+ * @param {number} min минимальное число
+ * @param {number} max максимальное число
  * @return {number}
  */
 function getRandomNumber(min, max) {
@@ -14,7 +14,7 @@ function getRandomNumber(min, max) {
 
 /**
  * Возвращает случайный элемент массива
- * @param array массив
+ * @param {Object[]} array массив
  * @return {*}
  */
 function getRandomArrayElement(array) {
@@ -59,8 +59,8 @@ var PHOTO_COUNT = 25;
 
 /**
  * функция получения случайного 1го или 2х комментариев
- * @param commentsCount количество комментариев
- * @return string
+ * @param {number} commentsCount количество комментариев
+ * @return {string}
  */
 function getRandomComments(commentsCount) {
 
@@ -107,7 +107,7 @@ for (var i = 1; i <= PHOTO_COUNT; i++) {
 /**
  * Возвращает DOM - элемент для фотографии
  * с проставленными ссылками, количеством лайков и комментарием
- * @param picture
+ * @param {Object} picture
  * @return {Node}
  */
 function getPictureElement(picture) {
@@ -122,8 +122,8 @@ function getPictureElement(picture) {
 var fragment = document.createDocumentFragment();
 
 
-for (var j = 0; j < pictures.length; j++) {
-  var template = getPictureElement(pictures[j]);
+for (var pictureIndex = 0; pictureIndex < pictures.length; pictureIndex++) {
+  var template = getPictureElement(pictures[pictureIndex]);
   fragment.appendChild(template);
 }
 
@@ -134,8 +134,8 @@ picturesSection.appendChild(fragment);
 
 /**
  * Создает DOM-элемент <li> комментария и наполняет его аватаром и сообщением
- * @param commentItem
- * @returns {Node}
+ * @param {Object} commentItem
+ * @return {Node}
  */
 function getCommentElement(commentItem) {
   var templateLi = document.querySelector('#comment').content.cloneNode(true);
@@ -148,7 +148,8 @@ function getCommentElement(commentItem) {
 
 /**
  * функция принимает объект фотографии и показывает её как большую
- * @param picture
+ * @param {Object} picture
+ * @return {void}
  */
 var showBigImage = function (picture) {
   var bigPicture = document.querySelector('.big-picture');
