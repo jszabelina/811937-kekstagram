@@ -6,8 +6,8 @@ function getRandomNumber(min, max) {
 }
 
 
-function getRandomArrayElement(array, min, max){
-  return array[getRandomNumber(min, max)];
+function getRandomArrayElement(array) {
+  return array[getRandomNumber(0, array.length - 1)];
 }
 
 
@@ -46,13 +46,22 @@ var descriptions = [
 
 var PHOTO_COUNT = 25;
 
-
+/**
+ * Рекурсивная функция получения случайного 1го или 2х комментариев
+ * @param commentsCount количество комментариев
+ * @return string
+ */
 function getRandomComments(commentsCount) {
 
-  var comment = getRandomArrayElement(comments, 0, 5);
+  var comment = getRandomArrayElement(comments); // получаем случайный элемент из массива комментариев
 
   if (commentsCount === 2) {
-    var secondComment = getRandomComments(1);
+    var secondComment = getRandomComments(1); // если кол-во комментариев равно двум, получаем еще один случайных
+
+    /**
+     * вызываем рекурсивно функцию до момента, пока 1й и 2й комментарий равны
+     * это делается для того, что бы получить два разных комментария
+     */
     while (comment === secondComment) {
       secondComment = getRandomComments(1);
     }
@@ -70,12 +79,12 @@ for (var i = 1; i <= PHOTO_COUNT; i++) {
 
   var commentsCount = getRandomNumber(1, 5);
 
-  for (var j = 0; j < commentsCount; j++){
+  for (var j = 0; j < commentsCount; j++) {
     commentsForCurrentItem.push(
         {
           avatar: 'img/avatar-' + getRandomNumber(1, 6) + '.svg',
           message: getRandomComments(getRandomNumber(1, 2)),
-          name: getRandomArrayElement(names, 0, 5)
+          name: getRandomArrayElement(names)
         }
     );
   }
@@ -84,7 +93,7 @@ for (var i = 1; i <= PHOTO_COUNT; i++) {
     url: 'photos/' + i + '.jpg',
     likes: getRandomNumber(15, 200),
     comments: commentsForCurrentItem,
-    description: getRandomArrayElement(descriptions, 0, 5)
+    description: getRandomArrayElement(descriptions)
   });
 }
 
@@ -124,13 +133,14 @@ var showBigImage = function (picture) {
   var bigPicture = document.querySelector('.big-picture');
   bigPicture.classList.remove('hidden');
 
+  // вызываю querySelector у big-picture, а не у document
   var bigPicturesImg = bigPicture.querySelector('.big-picture__img img');
   bigPicturesImg.src = picture.url;
   document.querySelector('.likes-count').textContent = picture.likes;
   document.querySelector('.comments-count').textContent = picture.comments.length;
 
   var ulSocialComments = document.querySelector('.social__comments');
-  for (var currentCommentIndex = 0; currentCommentIndex < picture.comments.length; currentCommentIndex++){
+  for (var currentCommentIndex = 0; currentCommentIndex < picture.comments.length; currentCommentIndex++) {
     ulSocialComments.appendChild(getCommentElement(picture.comments[currentCommentIndex]));
   }
 
