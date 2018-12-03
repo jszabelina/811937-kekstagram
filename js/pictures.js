@@ -114,7 +114,7 @@ function getPictureElement(picture) {
   var template = document.querySelector('#picture').content.cloneNode(true);
   template.querySelector('.picture__img').src = picture.url;
   template.querySelector('.picture__likes').textContent = picture.likes;
-  template.querySelector('.picture__comments').textContent = picture.comments;
+  template.querySelector('.picture__comments').textContent = picture.comments.length;
   return template;
 }
 
@@ -180,7 +180,7 @@ var imageForm = document.querySelector('.img-upload__overlay');
 
 
 uploadFileInput.addEventListener('change', function () {
-    imageForm.classList.remove('hidden');
+  imageForm.classList.remove('hidden');
 });
 
 
@@ -191,30 +191,25 @@ closeButton.addEventListener('click', function () {
   imageForm.classList.add('hidden');
 });
 
-
+var CODE_ESC = 27;
 document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 27) {
-    if (!imageForm.classList.contains('hidden')){
+  if (evt.keyCode === CODE_ESC) {
+    if (!imageForm.classList.contains('hidden')) {
       imageForm.classList.add('hidden');
     }
   }
 });
 
 
-var effectItems = document.querySelectorAll('.effects__item');
+var effectsField = document.querySelector('.effects');
 
 
-var addEffectItemHandler = function (effectItem) {
-  effectItem.addEventListener('click', function () {
-    var classForEffect = effectItem.querySelector('.effects__preview').classList[1];
-    var previewImage = imageForm.querySelector('.img-upload__preview img');
-    previewImage.classList = '';
-    previewImage.classList.add(classForEffect);
-  });
-};
+var previewImage = imageForm.querySelector('.img-upload__preview img');
 
 
-for (var effectsItemIndex = 0; effectsItemIndex < effectItems.length; effectsItemIndex++) {
-  addEffectItemHandler(effectItems[effectsItemIndex]);
-}
+effectsField.addEventListener('change', function (effectItem) {
+  var classForEffect = 'effects__preview--' + effectItem.target.value;
+  previewImage.classList = '';
+  previewImage.classList.add(classForEffect);
+});
 
