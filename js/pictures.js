@@ -8,6 +8,12 @@ var MAX_SCALE = 100;
 var STEP_SCALE = 25;
 var MIN_PIN = 0;
 var MAX_PIN = 455;
+var EFFECT_CHROME = 'chrome';
+var EFFECT_SEPIA = 'sepia';
+var EFFECT_MARVIN = 'marvin';
+var EFFECT_PHOBOS = 'phobos';
+var EFFECT_HEAT = 'heat';
+
 
 /**
  * Возвращает случайно число между минимальным и максимальным
@@ -235,10 +241,11 @@ effectsField.addEventListener('change', function (effectItem) {
   var classForEffect = 'effects__preview--' + effectItem.target.value;
   previewImage.classList = '';
   previewImage.classList.add(classForEffect);
+  previewImage.removeAttribute('style');
   if (classForEffect === 'effects__preview--none') {
     slider.classList.add('hidden');
   } else {
-    currentEffect = effectItem.target.value = 100;
+    currentEffect = effectItem.target.value;
     effectLevelDepth.style.width = '100%';
     sliderHandle.style.left = MAX_PIN + 'px';
     slider.classList.remove('hidden');
@@ -264,18 +271,23 @@ closeBigImage.addEventListener('click', function () {
 });
 
 
-var scaleControle = document.querySelector('.scale__control--value');
-var value = parseInt(scaleControle.value, 10);
+var scaleControl = document.querySelector('.scale__control--value');
+var value = parseInt(scaleControl.value, 10);
 var buttonSmaller = document.querySelector('.scale__control--smaller');
 var buttonBigger = document.querySelector('.scale__control--bigger');
+
+
+var buttonScaleClickHandler = function (valueScale) {
+  scaleControl.value = valueScale + '%';
+  var insertValue = valueScale / 100;
+  previewImage.style.transform = 'scale(' + insertValue + ')';
+};
 
 
 buttonSmaller.addEventListener('click', function () {
   if (value !== MIN_SCALE) {
     value -= STEP_SCALE;
-    scaleControle.value = value + '%';
-    var insertValue = value / 100;
-    previewImage.style.transform = 'scale(' + insertValue + ')';
+    buttonScaleClickHandler(value);
   }
 });
 
@@ -283,9 +295,7 @@ buttonSmaller.addEventListener('click', function () {
 buttonBigger.addEventListener('click', function () {
   if (value !== MAX_SCALE) {
     value += STEP_SCALE;
-    scaleControle.value = value + '%';
-    var insertValue = value / 100;
-    previewImage.style.transform = 'scale(' + insertValue + ')';
+    buttonScaleClickHandler(value);
   }
 });
 
@@ -317,43 +327,47 @@ sliderHandle.addEventListener('mousedown', function (evt) {
       effectLevelDepth.style.width = percent + '%';
 
 
-      switch (currentEffect) {
+      /**
+       * Создаем фильтр влияющий на глубину эффекта
+       * @param {string} name название эффекта
+       * @param {number} percentEffect положение пина
+       * @return {string}
+       */
+      var getFilterEffect = function (name, percentEffect) {
+        switch (name) {
+          case EFFECT_CHROME:
+            return 'grayscale(' + percentEffect / 100 + ')';
+          case EFFECT_SEPIA:
+            return 'sepia(' + percentEffect / 100 + ')';
+          case EFFECT_MARVIN:
+            return 'invert(' + percentEffect + '%)';
+          case EFFECT_PHOBOS:
+            var blurPx = 3 * percentEffect / 100;
+            return 'blur(' + blurPx + 'px)';
+          case EFFECT_HEAT:
+            var brightnesVal = 3 * percentEffect / 100;
+            if (brightnesVal < 1) {
+              brightnesVal = 1;
+            }
+            return 'brightness(' + brightnesVal + ')';
+        }
+        return '';
+      };
 
-        case 'crome':
-          previewImage.style.filter = 'grayscale(' + percent / 100 + ')';
-          break;
-        case 'sepia':
-          previewImage.style.filter = 'sepia(' + percent / 100 + ')';
-          break;
-        case 'marvin':
-          previewImage.style.filter = 'invert(' + percent + '%)';
-          break;
-        case 'phobos':
-          var blurPx = 3 * percent / 100;
-          previewImage.style.filter = 'blur(' + blurPx + 'px)';
-          break;
-        case 'heat':
-          var brightnesVal = 3 * percent / 100;
-          if(brightnesVal < 1){
-            brightnesVal = 1;
-          }
-          previewImage.style.filter = 'brightness(' + brightnesVal + ')';
-          break;
-      }
+
+      previewImage.style.filter = getFilterEffect(currentEffect, percent);
     }
-
   };
 
-  var onMouseUp = function(upEvent) {
+
+  var onMouseUp = function (upEvent) {
     upEvent.preventDefault();
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
-
   };
 
 
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-
 });
