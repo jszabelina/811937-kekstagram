@@ -119,6 +119,7 @@ for (var i = 0; i < PHOTO_COUNT; i++) {
   });
 }
 
+
 /**
  * Возвращает DOM - элемент для фотографии
  * с проставленными ссылками, количеством лайков и комментарием
@@ -173,7 +174,6 @@ var bigPicture = document.querySelector('.big-picture');
 var showBigImage = function (picture) {
   bigPicture.classList.remove('hidden');
 
-  // вызываю querySelector у big-picture, а не у document
   var bigPicturesImg = bigPicture.querySelector('.big-picture__img img');
   bigPicturesImg.src = picture.url;
   bigPicture.querySelector('.likes-count').textContent = picture.likes;
@@ -185,12 +185,12 @@ var showBigImage = function (picture) {
     ulSocialComments.appendChild(getCommentElement(picture.comments[currentCommentIndex]));
   }
 
-
   bigPicture.querySelector('.social__caption').textContent = picture.description;
 
   bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
   bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
 };
+
 
 var uploadFileInput = document.querySelector('#upload-file');
 
@@ -237,15 +237,15 @@ var currentEffect = '';
 var sliderHandle = imageForm.querySelector('.effect-level__pin');
 var effectLevelDepth = document.querySelector('.effect-level__depth');
 
-effectsField.addEventListener('change', function (effectItem) {
-  var classForEffect = 'effects__preview--' + effectItem.target.value;
+effectsField.addEventListener('change', function (evt) {
+  var classForEffect = 'effects__preview--' + evt.target.value;
   previewImage.classList = '';
   previewImage.classList.add(classForEffect);
   previewImage.removeAttribute('style');
   if (classForEffect === 'effects__preview--none') {
     slider.classList.add('hidden');
   } else {
-    currentEffect = effectItem.target.value;
+    currentEffect = evt.target.value;
     effectLevelDepth.style.width = '100%';
     sliderHandle.style.left = MAX_PIN + 'px';
     slider.classList.remove('hidden');
@@ -277,7 +277,7 @@ var buttonSmaller = document.querySelector('.scale__control--smaller');
 var buttonBigger = document.querySelector('.scale__control--bigger');
 
 
-var buttonScaleClickHandler = function (valueScale) {
+var applyScale = function (valueScale) {
   scaleControl.value = valueScale + '%';
   var insertValue = valueScale / 100;
   previewImage.style.transform = 'scale(' + insertValue + ')';
@@ -287,7 +287,7 @@ var buttonScaleClickHandler = function (valueScale) {
 buttonSmaller.addEventListener('click', function () {
   if (value !== MIN_SCALE) {
     value -= STEP_SCALE;
-    buttonScaleClickHandler(value);
+    applyScale(value);
   }
 });
 
@@ -295,13 +295,41 @@ buttonSmaller.addEventListener('click', function () {
 buttonBigger.addEventListener('click', function () {
   if (value !== MAX_SCALE) {
     value += STEP_SCALE;
-    buttonScaleClickHandler(value);
+    applyScale(value);
   }
 });
 
 
 //  кнопка изменения глубины эффекта
 var effectLevelValueInput = document.querySelector('.effect-level__value');
+
+
+/**
+ * Создаем фильтр влияющий на глубину эффекта
+ * @param {string} name название эффекта
+ * @param {number} percentEffect положение пина
+ * @return {string}
+ */
+var getFilterEffect = function (name, percentEffect) {
+  switch (name) {
+    case EFFECT_CHROME:
+      return 'grayscale(' + percentEffect / 100 + ')';
+    case EFFECT_SEPIA:
+      return 'sepia(' + percentEffect / 100 + ')';
+    case EFFECT_MARVIN:
+      return 'invert(' + percentEffect + '%)';
+    case EFFECT_PHOBOS:
+      var blurPx = 3 * percentEffect / 100;
+      return 'blur(' + blurPx + 'px)';
+    case EFFECT_HEAT:
+      var brightnesVal = 3 * percentEffect / 100;
+      if (brightnesVal < 1) {
+        brightnesVal = 1;
+      }
+      return 'brightness(' + brightnesVal + ')';
+  }
+  return '';
+};
 
 sliderHandle.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
@@ -325,35 +353,6 @@ sliderHandle.addEventListener('mousedown', function (evt) {
       effectLevelValueInput.value = percent;
       sliderHandle.style.left = styleHandlerLeft + 'px';
       effectLevelDepth.style.width = percent + '%';
-
-
-      /**
-       * Создаем фильтр влияющий на глубину эффекта
-       * @param {string} name название эффекта
-       * @param {number} percentEffect положение пина
-       * @return {string}
-       */
-      var getFilterEffect = function (name, percentEffect) {
-        switch (name) {
-          case EFFECT_CHROME:
-            return 'grayscale(' + percentEffect / 100 + ')';
-          case EFFECT_SEPIA:
-            return 'sepia(' + percentEffect / 100 + ')';
-          case EFFECT_MARVIN:
-            return 'invert(' + percentEffect + '%)';
-          case EFFECT_PHOBOS:
-            var blurPx = 3 * percentEffect / 100;
-            return 'blur(' + blurPx + 'px)';
-          case EFFECT_HEAT:
-            var brightnesVal = 3 * percentEffect / 100;
-            if (brightnesVal < 1) {
-              brightnesVal = 1;
-            }
-            return 'brightness(' + brightnesVal + ')';
-        }
-        return '';
-      };
-
 
       previewImage.style.filter = getFilterEffect(currentEffect, percent);
     }
