@@ -8,12 +8,12 @@ var MAX_SCALE = 100;
 var STEP_SCALE = 25;
 var MIN_PIN = 0;
 var MAX_PIN = 455;
-var FILTERS = {
-  EFFECT_CHROME: 'chrome',
-  EFFECT_SEPIA: 'sepia',
-  EFFECT_MARVIN: 'marvin',
-  EFFECT_PHOBOS: 'phobos',
-  EFFECT_HEAT: 'heat'
+var Filter = {
+  CHROME: 'chrome',
+  SEPIA: 'sepia',
+  MARVIN: 'marvin',
+  PHOBOS: 'phobos',
+  HEAT: 'heat'
 };
 
 
@@ -241,7 +241,7 @@ var effectLevelDepth = document.querySelector('.effect-level__depth');
 
 effectsField.addEventListener('change', function (evt) {
   var classForEffect = 'effects__preview--' + evt.target.value;
-  previewImage.classList = '';
+  previewImage.className = '';
   previewImage.classList.add(classForEffect);
   previewImage.removeAttribute('style');
   if (classForEffect === 'effects__preview--none') {
@@ -314,16 +314,16 @@ var effectLevelValueInput = document.querySelector('.effect-level__value');
  */
 var getFilterEffect = function (name, percentEffect) {
   switch (name) {
-    case FILTERS.EFFECT_CHROME:
+    case Filter.CHROME:
       return 'grayscale(' + percentEffect / 100 + ')';
-    case FILTERS.EFFECT_SEPIA:
+    case Filter.SEPIA:
       return 'sepia(' + percentEffect / 100 + ')';
-    case FILTERS.EFFECT_MARVIN:
+    case Filter.MARVIN:
       return 'invert(' + percentEffect + '%)';
-    case FILTERS.EFFECT_PHOBOS:
+    case Filter.PHOBOS:
       var blurPx = 3 * percentEffect / 100;
       return 'blur(' + blurPx + 'px)';
-    case FILTERS.EFFECT_HEAT:
+    case Filter.HEAT:
       var brightnesVal = 3 * percentEffect / 100;
       if (brightnesVal < 1) {
         brightnesVal = 1;
