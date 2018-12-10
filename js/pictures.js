@@ -210,17 +210,47 @@ var closeButton = document.querySelector('#upload-cancel');
 
 
 closeButton.addEventListener('click', function () {
-  imageForm.classList.add('hidden');
+  closeUploadForm();
 });
 
 
+var hashtagsInput = document.querySelector('.text__hashtags');
+var descriptionPhoto = document.querySelector('.text__description');
+var main = document.querySelector('main');
+var focusInHashtags = false;
+var focusInDescription = false;
+
+
+hashtagsInput.addEventListener('focus', function () {
+  focusInHashtags = true;
+});
+
+
+hashtagsInput.addEventListener('blur', function () {
+  focusInHashtags = false;
+});
+
+
+descriptionPhoto.addEventListener('focus', function () {
+  focusInDescription = true;
+});
+
+
+descriptionPhoto.addEventListener('blur', function () {
+  focusInDescription = false;
+});
+
 document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === CODE_ESC) {
+  if (evt.keyCode === CODE_ESC && !focusInHashtags && !focusInDescription) {
     if (!imageForm.classList.contains('hidden')) {
-      imageForm.classList.add('hidden');
+      closeUploadForm();
     }
     if (!bigPicture.classList.contains('hidden')) {
       bigPicture.classList.add('hidden');
+    }
+
+    if (main.querySelector('.success')) {
+      closeSuccess();
     }
   }
 });
@@ -250,10 +280,24 @@ effectsField.addEventListener('change', function (evt) {
     currentEffect = evt.target.value;
     effectLevelDepth.style.width = '100%';
     sliderHandle.style.left = MAX_PIN + 'px';
+    scaleControl.value = '100%';
     slider.classList.remove('hidden');
   }
 });
 
+
+var closeUploadForm = function () {
+  imageForm.classList.add('hidden');
+  previewImage.style.transform = 'scale(1)';
+  previewImage.className = '';
+  previewImage.classList.add('effects__preview--none');
+  scaleControl.value = '100%';
+};
+
+
+var closeSuccess = function () {
+  main.querySelector('.success').remove();
+};
 
 var picturesElements = picturesSection.querySelectorAll('.picture');
 
@@ -372,3 +416,91 @@ sliderHandle.addEventListener('mousedown', function (evt) {
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
 });
+
+
+// валидация формы отправки изображения
+var uploadImageForm = document.querySelector('.img-upload__form');
+
+uploadImageForm.addEventListener('submit', function (evt) {
+
+
+  closeUploadForm();
+
+  var successTemplate = document.querySelector('#success').content.cloneNode(true);
+  var successButton = successTemplate.querySelector('button');
+
+  successButton.addEventListener('click', function () {
+    closeSuccess();
+  });
+
+  var onDocumentClick = function () {
+    closeSuccess();
+    document.removeEventListener('click', onDocumentClick);
+  };
+
+  document.addEventListener('click', onDocumentClick);
+
+
+  main.appendChild(successTemplate);
+
+  evt.preventDefault();
+});
+
+hashtagsInput.addEventListener('input', function () {
+
+  var hashtags = hashtagsInput.value.split(' ');
+
+  var resultHashtags = validateHashtags(hashtags);
+
+  if (resultHashtags !== true) {
+    hashtagsInput.setCustomValidity(resultHashtags);
+    hashtagsInput.style.border = '1px solid red';
+
+  } else {
+    hashtagsInput.removeAttribute('style');
+    hashtagsInput.setCustomValidity('');
+  }
+
+});
+
+/**
+ * валидация хэштегов
+ * @param {array} hashtags массив хэштегов
+ * @return {string}
+ */
+var validateHashtags = function (hashtags) {
+  if (hashtags.length === 1 && hashtags[0] === '') {
+    return true;
+  }
+
+  if (hashtags.length > 5) {
+    return 'нельзя указать больше пяти хэш-тегов';
+  }
+
+  var hashtagsObject = {};
+
+  for (var hashtagIndex = 0; hashtagIndex < hashtags.length; hashtagIndex++) {
+    hashtags[hashtagIndex] = hashtags[hashtagIndex].toLowerCase();
+
+    if (hashtags[hashtagIndex][0] !== '#') {
+      return 'хэш-тег начинается с символа # (решётка)';
+    }
+
+    if (hashtags[hashtagIndex] === '#') {
+      return 'хеш-тег не может состоять только из одной решётки';
+    }
+
+    if (hashtagsObject.hasOwnProperty(hashtags[hashtagIndex])) {
+      return 'один и тот же хэш-тег не может быть использован дважды';
+    }
+
+    if (hashtags[hashtagIndex].length > 20) {
+      return 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+    }
+
+    hashtagsObject[hashtags[hashtagIndex]] = 1;
+  }
+
+  return true;
+};
+
