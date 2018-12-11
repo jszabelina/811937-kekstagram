@@ -15,6 +15,7 @@ var Filter = {
   PHOBOS: 'phobos',
   HEAT: 'heat'
 };
+var HASHTAG_MAX_LENGTH = 20;
 
 
 /**
@@ -440,7 +441,6 @@ uploadImageForm.addEventListener('submit', function (evt) {
 
   document.addEventListener('click', onDocumentClick);
 
-
   main.appendChild(successTemplate);
 
   evt.preventDefault();
@@ -448,19 +448,17 @@ uploadImageForm.addEventListener('submit', function (evt) {
 
 hashtagsInput.addEventListener('input', function () {
 
-  var hashtags = hashtagsInput.value.split(' ');
+  var hashtags = hashtagsInput.value.toLowerCase().split(' ');
 
   var resultHashtags = validateHashtags(hashtags);
 
-  if (resultHashtags !== true) {
-    hashtagsInput.setCustomValidity(resultHashtags);
-    hashtagsInput.style.border = '1px solid red';
+  hashtagsInput.setCustomValidity(resultHashtags);
 
+  if (resultHashtags !== '') {
+    hashtagsInput.style.outline = '1px solid red';
   } else {
-    hashtagsInput.removeAttribute('style');
-    hashtagsInput.setCustomValidity('');
+    hashtagsInput.style.outline = 'none';
   }
-
 });
 
 /**
@@ -470,37 +468,32 @@ hashtagsInput.addEventListener('input', function () {
  */
 var validateHashtags = function (hashtags) {
   if (hashtags.length === 1 && hashtags[0] === '') {
-    return true;
+    return '';
   }
 
   if (hashtags.length > 5) {
     return 'нельзя указать больше пяти хэш-тегов';
   }
 
-  var hashtagsObject = {};
-
   for (var hashtagIndex = 0; hashtagIndex < hashtags.length; hashtagIndex++) {
-    hashtags[hashtagIndex] = hashtags[hashtagIndex].toLowerCase();
-
-    if (hashtags[hashtagIndex][0] !== '#') {
+    var currentHashtag = hashtags[hashtagIndex];
+    if (currentHashtag[0] !== '#') {
       return 'хэш-тег начинается с символа # (решётка)';
     }
 
-    if (hashtags[hashtagIndex] === '#') {
+    if (currentHashtag === '#') {
       return 'хеш-тег не может состоять только из одной решётки';
     }
 
-    if (hashtagsObject.hasOwnProperty(hashtags[hashtagIndex])) {
+    if (hashtags.indexOf(currentHashtag, (hashtagIndex + 1))) {
       return 'один и тот же хэш-тег не может быть использован дважды';
     }
 
-    if (hashtags[hashtagIndex].length > 20) {
+    if (currentHashtag.length > HASHTAG_MAX_LENGTH) {
       return 'максимальная длина одного хэш-тега 20 символов, включая решётку';
     }
-
-    hashtagsObject[hashtags[hashtagIndex]] = 1;
   }
 
-  return true;
+  return '';
 };
 
