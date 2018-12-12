@@ -293,11 +293,16 @@ var closeUploadForm = function () {
   previewImage.className = '';
   previewImage.classList.add('effects__preview--none');
   scaleControl.value = '100%';
+  hashtagsInput.value = '';
+  descriptionPhoto.value = '';
 };
 
 
 var closeSuccess = function () {
-  main.querySelector('.success').remove();
+  var successWindow = main.querySelector('.success');
+  if (successWindow) {
+    successWindow.remove();
+  }
 };
 
 var picturesElements = picturesSection.querySelectorAll('.picture');
@@ -454,11 +459,7 @@ hashtagsInput.addEventListener('input', function () {
 
   hashtagsInput.setCustomValidity(resultHashtags);
 
-  if (resultHashtags !== '') {
-    hashtagsInput.style.outline = '1px solid red';
-  } else {
-    hashtagsInput.style.outline = 'none';
-  }
+  (resultHashtags !== '') ? hashtagsInput.style.outline = '1px solid red' : hashtagsInput.style.outline = 'none';
 });
 
 /**
@@ -467,6 +468,7 @@ hashtagsInput.addEventListener('input', function () {
  * @return {string}
  */
 var validateHashtags = function (hashtags) {
+
   if (hashtags.length === 1 && hashtags[0] === '') {
     return '';
   }
@@ -481,11 +483,16 @@ var validateHashtags = function (hashtags) {
       return 'хэш-тег начинается с символа # (решётка)';
     }
 
+    var splitedHashtag = currentHashtag.split('#');
+    if (splitedHashtag.length > 2) {
+      return 'хэштеги должны быть разделены пробелами';
+    }
+
     if (currentHashtag === '#') {
       return 'хеш-тег не может состоять только из одной решётки';
     }
 
-    if (hashtags.indexOf(currentHashtag, (hashtagIndex + 1))) {
+    if (hashtags.indexOf(currentHashtag, (hashtagIndex + 1)) > -1) {
       return 'один и тот же хэш-тег не может быть использован дважды';
     }
 
