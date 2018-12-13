@@ -459,7 +459,7 @@ hashtagsInput.addEventListener('input', function () {
 
   hashtagsInput.setCustomValidity(resultHashtags);
 
-  (resultHashtags !== '') ? hashtagsInput.style.outline = '1px solid red' : hashtagsInput.style.outline = 'none';
+  hashtagsInput.style.outline = (resultHashtags !== '') ? '1px solid red' : 'none';
 });
 
 /**
@@ -479,12 +479,12 @@ var validateHashtags = function (hashtags) {
 
   for (var hashtagIndex = 0; hashtagIndex < hashtags.length; hashtagIndex++) {
     var currentHashtag = hashtags[hashtagIndex];
+
     if (currentHashtag[0] !== '#') {
       return 'хэш-тег начинается с символа # (решётка)';
     }
 
-    var splitedHashtag = currentHashtag.split('#');
-    if (splitedHashtag.length > 2) {
+    if (currentHashtag.indexOf('#', 1) > -1) {
       return 'хэштеги должны быть разделены пробелами';
     }
 
@@ -492,7 +492,7 @@ var validateHashtags = function (hashtags) {
       return 'хеш-тег не может состоять только из одной решётки';
     }
 
-    if (hashtags.indexOf(currentHashtag, (hashtagIndex + 1)) > -1) {
+    if (hashtags.indexOf(currentHashtag, hashtagIndex + 1) > -1) {
       return 'один и тот же хэш-тег не может быть использован дважды';
     }
 
@@ -503,4 +503,3 @@ var validateHashtags = function (hashtags) {
 
   return '';
 };
-
