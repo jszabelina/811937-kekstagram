@@ -191,7 +191,6 @@ var showBigImage = function (picture) {
   bigPicture.querySelector('.social__caption').textContent = picture.description;
 
   bigPicture.querySelector('.social__comment-count').classList.add('visually-hidden');
-
   bigPicture.querySelector('.comments-loader').classList.add('visually-hidden');
 };
 
