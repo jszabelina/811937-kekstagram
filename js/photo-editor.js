@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var MIN_SCALE = 25;
+  var MAX_SCALE = 100;
+  var STEP_SCALE = 25;
   var MIN_PIN = 0;
   var MAX_PIN = 455;
   var Filter = {
@@ -10,25 +13,50 @@
     PHOBOS: 'phobos',
     HEAT: 'heat'
   };
+  var scaleControl = document.querySelector('.scale__control--value');
+  var value = parseInt(scaleControl.value, 10);
+  var buttonSmaller = document.querySelector('.scale__control--smaller');
+  var buttonBigger = document.querySelector('.scale__control--bigger');
+
+  var applyScale = function (valueScale) {
+    scaleControl.value = valueScale + '%';
+    var insertValue = valueScale / 100;
+    window.form.previewImage.style.transform = 'scale(' + insertValue + ')';
+  };
+
+  buttonSmaller.addEventListener('click', function () {
+    if (value !== MIN_SCALE) {
+      value -= STEP_SCALE;
+      applyScale(value);
+    }
+  });
+
+
+  buttonBigger.addEventListener('click', function () {
+    if (value !== MAX_SCALE) {
+      value += STEP_SCALE;
+      applyScale(value);
+    }
+  });
   var effectsField = document.querySelector('.effects');
 
   var currentEffect = '';
-  var sliderHandle = window.elements.imageForm.querySelector('.effect-level__pin');
+  var sliderHandle = window.form.imageForm.querySelector('.effect-level__pin');
   var effectLevelDepth = document.querySelector('.effect-level__depth');
 
   effectsField.addEventListener('change', function (evt) {
     var classForEffect = 'effects__preview--' + evt.target.value;
-    window.elements.previewImage.className = '';
-    window.elements.previewImage.classList.add(classForEffect);
-    window.elements.previewImage.removeAttribute('style');
+    window.form.previewImage.className = '';
+    window.form.previewImage.classList.add(classForEffect);
+    window.form.previewImage.removeAttribute('style');
     if (classForEffect === 'effects__preview--none') {
-      window.elements.slider.classList.add('hidden');
+      window.form.slider.classList.add('hidden');
     } else {
       currentEffect = evt.target.value;
       effectLevelDepth.style.width = '100%';
       sliderHandle.style.left = MAX_PIN + 'px';
       window.form.scaleControl.value = '100%';
-      window.elements.slider.classList.remove('hidden');
+      window.form.slider.classList.remove('hidden');
     }
   });
 
@@ -81,7 +109,7 @@
         sliderHandle.style.left = styleHandlerLeft + 'px';
         effectLevelDepth.style.width = percent + '%';
 
-        window.elements.previewImage.style.filter = getFilterEffect(currentEffect, percent);
+        window.form.previewImage.style.filter = getFilterEffect(currentEffect, percent);
       }
     };
 
@@ -95,4 +123,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.scaleControl = scaleControl;
 })();
