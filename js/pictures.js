@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(function (data) {
   /**
    * Возвращает DOM - элемент для фотографии
    * с проставленными ссылками, количеством лайков и комментарием
@@ -15,16 +15,10 @@
     template.querySelector('.picture__comments').textContent = picture.comments.length;
     return template;
   }
+  data.pushPictureInGallery();
 
-  var fragment = document.createDocumentFragment();
+  window.pictures = {
+    getPictureElement: getPictureElement
+  };
 
-  for (var pictureIndex = 0; pictureIndex < window.pictures.length; pictureIndex++) {
-    var template = getPictureElement(window.pictures[pictureIndex]);
-    fragment.appendChild(template);
-  }
-
-  var picturesSection = document.querySelector('.pictures');
-  picturesSection.appendChild(fragment);
-
-  window.picturesSection = picturesSection;
-})();
+})(window.data);

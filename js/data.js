@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(function (picturesModul) {
   var PHOTO_COUNT = 25;
 
   var pictures = [];
@@ -70,6 +70,13 @@
       );
     }
 
+    var fragment = document.createDocumentFragment();
+    var pushPictureInGallery = function () {
+      for (var pictureIndex = 0; pictureIndex < picturesModul.length; pictureIndex++) {
+        var template = picturesModul.getPictureElement(pictures[pictureIndex]);
+        fragment.appendChild(template);
+      }
+    };
     var pictureNumber = i + 1;
 
     pictures.push({
@@ -80,6 +87,10 @@
       description: window.helpers.getRandomArrayElement(descriptions)
     });
   }
+  var picturesSection = document.querySelector('.pictures');
+  picturesSection.appendChild(fragment);
 
-  window.pictures = pictures;
-})();
+  window.data = {
+    pushPictureInGallery: pushPictureInGallery
+  };
+})(window.pictures);

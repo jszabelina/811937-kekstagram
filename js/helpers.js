@@ -11,9 +11,6 @@
     return Math.round(Math.random() * (max - min) + min);
   };
 
-
-  window.getRandomNumber = getRandomNumber;
-
   /**
    * Возвращает случайный элемент массива
    * @param {Object[]} array массив
@@ -27,5 +24,4 @@
     getRandomNumber: getRandomNumber,
     getRandomArrayElement: getRandomArrayElement
   };
-
 })();

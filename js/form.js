@@ -1,5 +1,5 @@
 'use strict';
-(function () {
+(function (photoEditor, preview) {
   var CODE_ESC = 27;
   var HASHTAG_MAX_LENGTH = 20;
 
@@ -7,11 +7,10 @@
 
   var main = document.querySelector('main');
   var imageForm = document.querySelector('.img-upload__overlay');
-  var slider = document.querySelector('.img-upload__effect-level');
 
   uploadFileInput.addEventListener('change', function () {
     imageForm.classList.remove('hidden');
-    slider.classList.add('hidden');
+    photoEditor.sliderHidden();
   });
   var closeButton = document.querySelector('#upload-cancel');
 
@@ -44,26 +43,21 @@
 
   document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === CODE_ESC && !focusInHashtags && !focusInDescription) {
-      if (!window.elements.imageForm.classList.contains('hidden')) {
-        window.form.closeUploadForm();
-      }
-      if (!window.bigPicture.classList.contains('hidden')) {
-        window.bigPicture.classList.add('hidden');
+      if (!imageForm.classList.contains('hidden')) {
+        closeUploadForm();
       }
 
-      if (window.elements.main.querySelector('.success')) {
-        window.form.closeSuccess();
+      preview.closeBigPicture();
+
+      if (main.querySelector('.success')) {
+        closeSuccess();
       }
     }
   });
-  var previewImage = imageForm.querySelector('.img-upload__preview img');
 
   var closeUploadForm = function () {
     imageForm.classList.add('hidden');
-    previewImage.style.transform = 'scale(1)';
-    previewImage.className = '';
-    previewImage.classList.add('effects__preview--none');
-    window.scaleControl.value = '100%';
+    photoEditor.clearFilter();
     hashtagsInput.value = '';
     descriptionPhoto.value = '';
   };
@@ -79,7 +73,7 @@
 
   uploadImageForm.addEventListener('submit', function (evt) {
 
-    window.closeUploadForm();
+    closeUploadForm();
 
     var successTemplate = document.querySelector('#success').content.cloneNode(true);
     var successButton = successTemplate.querySelector('button');
@@ -156,9 +150,7 @@
   window.form = {
     closeUploadForm: closeUploadForm,
     closeSuccess: closeSuccess,
-    previewImage: previewImage,
-    slider: slider,
     imageForm: imageForm
   };
-})();
+})(window.photoEditor, window.preview);
 

@@ -3,7 +3,6 @@
 (function () {
   var bigPicture = document.querySelector('.big-picture');
 
-
   /**
    * функция принимает объект фотографии и показывает её как большую
    * @param {Object} picture
@@ -49,11 +48,18 @@
     });
   }
 
-  var closeBigImage = window.bigPicture.querySelector('#picture-cancel');
-
+  var closeBigImage = bigPicture.querySelector('#picture-cancel');
   closeBigImage.addEventListener('click', function () {
     window.bigPicture.classList.add('hidden');
   });
-  window.bigPicture = bigPicture;
+  var closeBigPicture = function () {
+    if (!bigPicture.classList.contains('hidden')) {
+      bigPicture.classList.add('hidden');
+    }
+  };
+
+  window.preview = {
+    closeBigPicture: closeBigPicture
+  };
 })();
 
